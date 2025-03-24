@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Games - Mental Health Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="mood-games.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="index.html" style="text-decoration: none; font-size: 40px;">MMS</a>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="mood-selection.html">Mood Tracker</a>
+            <a href="mood-games.html" class="active">Mood Games</a>
+            <a href="dashboard.html">Dashboard</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="mood-games-container">
+        <div class="mood-selector">
+            <h2>Select Your Mood</h2>
+            <div class="mood-options">
+                <button class="mood-btn" data-mood="happy">
+                    <i class="fas fa-smile"></i>
+                    <span>Happy Games</span>
+                </button>
+                <button class="mood-btn" data-mood="anxiety">
+                    <i class="fas fa-wind"></i>
+                    <span>Anxiety Games</span>
+                </button>
+                <button class="mood-btn" data-mood="bored">
+                    <i class="fas fa-gamepad"></i>
+                    <span>Boredom Busters</span>
+                </button>
+                <button class="mood-btn" data-mood="focus">
+                    <i class="fas fa-brain"></i>
+                    <span>Focus Games</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="game-categories">
+            <div class="category-section" id="action-games">
+                <h3>Action</h3>
+                <div class="game-grid"></div>
+            </div>
+
+            <div class="category-section" id="puzzle-games">
+                <h3>Puzzle</h3>
+                <div class="game-grid"></div>
+            </div>
+
+            <div class="category-section" id="arcade-games">
+                <h3>Arcade</h3>
+                <div class="game-grid"></div>
+            </div>
+
+            <div class="category-section" id="relaxation-games">
+                <h3>Relaxation</h3>
+                <div class="game-grid"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Game Modal -->
+    <div class="game-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="game-frame"></div>
+        </div>
+    </div>
+
+    <script src="mood-games.js"></script>
+</body>
+</html> 

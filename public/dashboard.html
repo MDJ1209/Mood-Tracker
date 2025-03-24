@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindWell Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(45deg, #0ce39a, #69007f, #fc0987);
+            --secondary-gradient: linear-gradient(45deg, #0ce39a, #69007f);
+            --bg-gradient: linear-gradient(135deg, #1a1a1a 0%, #2c3e50 100%);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-hover: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 80px auto 40px;
+            padding: 2rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #fff;
+            background: var(--primary-gradient);
+            -webkit-text-fill-color: transparent;
+        }
+
+        .profile-section {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            background: var(--primary-gradient);
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: var(--glass-border);
+            font-size: 0.9rem;
+        }
+
+        .mood-chart {
+            height: 300px;
+        }
+
+        .recent-moods {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .mood-entry {
+            padding: 1rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .mood-entry:last-child {
+            border-bottom: none;
+        }
+
+        .mood-type {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .mood-notes {
+            font-size: 0.9rem;
+            color: #95a5a6;
+        }
+
+        .mood-date {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+
+        .time-filter {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: #fff;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: var(--secondary-gradient);
+            border-color: transparent;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-section {
+                flex-direction: column;
+            }
+
+            .profile-stats {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="dashboard-grid">
+            <div class="profile-section card">
+                <div class="profile-info">
+                    <h2 class="card-title">Welcome back, <span id="userName">User</span>!</h2>
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalEntries">0</div>
+                            <div class="stat-label">Mood Entries</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="avgMoodScore">0</div>
+                            <div class="stat-label">Average Mood</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="streakDays">0</div>
+                            <div class="stat-label">Day Streak</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">Mood Distribution</h3>
+                <canvas id="moodDistributionChart" class="mood-chart"></canvas>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">Mood Trends</h3>
+                <div class="time-filter">
+                    <button class="filter-btn active" data-period="week">Week</button>
+                    <button class="filter-btn" data-period="month">Month</button>
+                    <button class="filter-btn" data-period="year">Year</button>
+                </div>
+                <canvas id="moodTrendsChart" class="mood-chart"></canvas>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">Recent Entries</h3>
+                <div class="recent-moods" id="recentMoodsList"></div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">Daily Patterns</h3>
+                <canvas id="dailyPatternsChart" class="mood-chart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is logged in
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+
+        // Initialize charts
+        let moodDistributionChart, moodTrendsChart, dailyPatternsChart;
+
+        // Fetch dashboard data
+        async function fetchDashboardData() {
+            try {
+                const response = await fetch('http://localhost:3000/api/dashboard', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const data = await response.json();
+                updateDashboard(data);
+            } catch (error) {
+                console.error('Error fetching dashboard data:', error);
+            }
+        }
+
+        // Update dashboard with data
+        function updateDashboard(data) {
+            // Update profile section
+            document.getElementById('userName').textContent = data.profile.full_name || data.profile.username;
+            document.getElementById('totalEntries').textContent = data.moodStats.reduce((sum, stat) => sum + stat.count, 0);
+            document.getElementById('avgMoodScore').textContent = (data.overallMood || 0).toFixed(1);
+
+            // Update mood distribution chart
+            const moodDistributionCtx = document.getElementById('moodDistributionChart').getContext('2d');
+            moodDistributionChart = new Chart(moodDistributionCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: data.moodStats.map(stat => stat.mood_type),
+                    datasets: [{
+                        data: data.moodStats.map(stat => stat.count),
+                        backgroundColor: [
+                            '#0ce39a',
+                            '#69007f',
+                            '#fc0987',
+                            '#00d4ff',
+                            '#ffb300'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // Update mood trends chart
+            const moodTrendsCtx = document.getElementById('moodTrendsChart').getContext('2d');
+            moodTrendsChart = new Chart(moodTrendsCtx, {
+                type: 'line',
+                data: {
+                    labels: data.moodTrends.map(trend => new Date(trend.date).toLocaleDateString()),
+                    datasets: [{
+                        label: 'Average Mood Score',
+                        data: data.moodTrends.map(trend => trend.average_score),
+                        borderColor: '#0ce39a',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 5
+                        }
+                    }
+                }
+            });
+
+            // Update recent moods list
+            const recentMoodsList = document.getElementById('recentMoodsList');
+            recentMoodsList.innerHTML = data.recentMoods.map(mood => `
+                <div class="mood-entry">
+                    <div class="mood-type">${mood.mood_type} (${mood.mood_score}/5)</div>
+                    <div class="mood-notes">${mood.notes || 'No notes'}</div>
+                    <div class="mood-date">${new Date(mood.created_at).toLocaleString()}</div>
+                </div>
+            `).join('');
+        }
+
+        // Handle time filter clicks
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const period = btn.dataset.period;
+                const response = await fetch(`http://localhost:3000/api/mood-analysis?period=${period}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const data = await response.json();
+                updateCharts(data);
+            });
+        });
+
+        // Initial load
+        fetchDashboardData();
+
+        // Refresh data every 5 minutes
+        setInterval(fetchDashboardData, 300000);
+    </script>
+</body>
+</html> 

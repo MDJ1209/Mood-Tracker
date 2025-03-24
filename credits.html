@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credits | MindWell</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2c3e50 100%);
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff;
+            text-decoration: none;
+            background: linear-gradient(45deg, #0ce39a, #69007f, #fc0987);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 300% 300%;
+            animation: gradient-text 5s ease infinite;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(45deg, #0ce39a, #69007f, #fc0987);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a.active {
+            background: linear-gradient(45deg, #0ce39a, #69007f, #fc0987);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 100px auto 0;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            perspective: 1000px;
+        }
+
+        .team-card {
+            position: relative;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.5s ease;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        .team-card::before {
+            content: "";
+            position: absolute;
+            inset: 1px;
+            background: rgba(39, 39, 39, 0.5);
+            border-radius: 19px;
+            transition: 0.5s;
+            z-index: -1;
+        }
+
+        .team-card::after {
+            content: "";
+            position: absolute;
+            inset: 0px;
+            background: linear-gradient(45deg, #0ce39a, #69007f, #fc0987);
+            border-radius: 20px;
+            transition: 0.5s;
+            opacity: 0;
+            filter: blur(20px);
+            z-index: -2;
+        }
+
+        .team-card:hover {
+            transform: translateY(-20px) rotateX(10deg);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+
+        .team-card:hover::after {
+            opacity: 0.8;
+        }
+
+        .profile-circle {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 1.5rem;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+
+        .team-card:hover .profile-circle {
+            transform: translateZ(20px);
+        }
+
+        .profile-circle svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .profile-circle circle {
+            fill: none;
+            stroke: url(#gradient);
+            stroke-width: 2;
+            stroke-dasharray: 628;
+            stroke-dashoffset: 157;
+            transform: rotate(-90deg);
+            transform-origin: center;
+            animation: circle-animation 2s ease-out forwards;
+        }
+
+        @keyframes circle-animation {
+            from {
+                stroke-dashoffset: 628;
+            }
+            to {
+                stroke-dashoffset: 157;
+            }
+        }
+
+        .role-text {
+            position: absolute;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, #0ce39a, #69007f, #fc0987);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .name-text {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .team-name {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #fff;
+            transform: translateZ(30px);
+            transition: transform 0.5s ease;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .team-card:hover .team-name {
+            transform: translateZ(50px);
+        }
+
+        .team-role {
+            background: linear-gradient(45deg, #0ce39a, #69007f, #fc0987);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            transform: translateZ(20px);
+            transition: transform 0.5s ease;
+        }
+
+        .team-card:hover .team-role {
+            transform: translateZ(40px);
+        }
+
+        .team-id {
+            color: #bdc3c7;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            transform: translateZ(15px);
+            transition: transform 0.5s ease;
+        }
+
+        .team-card:hover .team-id {
+            transform: translateZ(35px);
+        }
+
+        .team-description {
+            color: #95a5a6;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            transform: translateZ(10px);
+            transition: transform 0.5s ease;
+        }
+
+        .team-card:hover .team-description {
+            transform: translateZ(30px);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            transform: translateZ(5px);
+            transition: transform 0.5s ease;
+        }
+
+        .team-card:hover .social-links {
+            transform: translateZ(25px);
+        }
+
+        .social-dot {
+            width: 10px;
+            height: 10px;
+            background: linear-gradient(45deg, #0ce39a, #69007f, #fc0987);
+            border-radius: 50%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .social-dot:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 15px rgba(12, 227, 154, 0.5);
+        }
+
+        @keyframes gradient-text {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .team-card {
+                transform: none !important;
+            }
+
+            .team-card:hover {
+                transform: translateY(-10px) !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand">MindWell</a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="mood-tracker.html">Mood Tracker</a>
+            <a href="mood-games.html">Mood Games</a>
+            <a href="recommendations.html">Recommendations</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="credits.html" class="active">Credits</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="team-card">
+            <div class="profile-circle">
+                <svg viewBox="0 0 200 200">
+                    <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#0ce39a" />
+                            <stop offset="50%" style="stop-color:#69007f" />
+                            <stop offset="100%" style="stop-color:#fc0987" />
+                        </linearGradient>
+                    </defs>
+                    <circle cx="100" cy="100" r="98"/>
+                </svg>
+                <div class="name-text">MAHAMED JANI</div>
+                <div class="role-text">Team Lead</div>
+            </div>
+            <h2 class="team-name">MAHAMED JANI</h2>
+            <h3 class="team-role">Team Lead</h3>
+            <p class="team-id">23L31A05F2</p>
+            <p class="team-description">Student of CSE department project Lead, Good precision over frontend frameworks and ethical skills</p>
+            <div class="social-links">
+                <div class="social-dot"></div>
+                <div class="social-dot"></div>
+                <div class="social-dot"></div>
+            </div>
+        </div>
+
+        <div class="team-card">
+            <div class="profile-circle">
+                <svg viewBox="0 0 200 200">
+                    <use href="#gradient"/>
+                    <circle cx="100" cy="100" r="98"/>
+                </svg>
+                <div class="name-text">M.Likhitha</div>
+                <div class="role-text">Design</div>
+            </div>
+            <h2 class="team-name">M.Likhitha</h2>
+            <h3 class="team-role">Design and Development</h3>
+            <p class="team-id">23L31A05G8</p>
+            <p class="team-description">Student of CSE department good at designing and styling</p>
+            <div class="social-links">
+                <div class="social-dot"></div>
+                <div class="social-dot"></div>
+                <div class="social-dot"></div>
+            </div>
+        </div>
+
+        <div class="team-card">
+            <div class="profile-circle">
+                <svg viewBox="0 0 200 200">
+                    <use href="#gradient"/>
+                    <circle cx="100" cy="100" r="98"/>
+                </svg>
+                <div class="name-text">R.Vinay Sagar</div>
+                <div class="role-text">Data Expert</div>
+            </div>
+            <h2 class="team-name">R.Vinay Sagar</h2>
+            <h3 class="team-role">Data Expert</h3>
+            <p class="team-id">23L31A05K0</p>
+            <p class="team-description">Strategic thinker with expertise in user experience and data analysis</p>
+            <div class="social-links">
+                <div class="social-dot"></div>
+                <div class="social-dot"></div>
+                <div class="social-dot"></div>
+            </div>
+        </div>
+
+        <div class="team-card">
+            <div class="profile-circle">
+                <svg viewBox="0 0 200 200">
+                    <use href="#gradient"/>
+                    <circle cx="100" cy="100" r="98"/>
+                </svg>
+                <div class="name-text">P.Madhavi</div>
+                <div class="role-text">Backend</div>
+            </div>
+            <h2 class="team-name">P.Madhavi</h2>
+            <h3 class="team-role">Backend Developer</h3>
+            <p class="team-id">24L31A0517</p>
+            <p class="team-description">Student of CSE department managing backend server of the project</p>
+            <div class="social-links">
+                <div class="social-dot"></div>
+                <div class="social-dot"></div>
+                <div class="social-dot"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.team-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 15;
+                const rotateY = -(x - centerX) / 15;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-20px)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+            });
+        });
+
+        // Animate circles on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.querySelector('circle').style.animation = 'circle-animation 2s ease-out forwards';
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.profile-circle').forEach(circle => {
+            observer.observe(circle);
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | MindWell</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #E67E22;
+            --text-dark: #4A5568;
+            --text-light: #718096;
+            --bg-light: #F7F3EE;
+            --bg-white: #FFFFFF;
+            --error: #e74c3c;
+            --success: #2ecc71;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(-45deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.2) 100%);
+            pointer-events: none;
+        }
+
+        .container {
+            position: relative;
+            width: 850px;
+            height: 500px;
+            background: var(--bg-white);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .container-forms {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            perspective: 1000px;
+        }
+
+        .container-info {
+            width: 40%;
+            padding: 40px;
+            background: linear-gradient(45deg, var(--primary), #f39c12);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            color: var(--bg-white);
+            transition: 0.5s ease-in-out;
+            position: relative;
+            z-index: 2;
+            transform-origin: right;
+        }
+
+        .info-item {
+            max-width: 260px;
+            margin: 0 auto;
+            opacity: 1;
+            transform: translateX(0);
+            transition: all 0.5s ease-in-out;
+        }
+
+        .info-item h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .info-item p {
+            margin-bottom: 30px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .container-form {
+            width: 60%;
+            padding: 40px;
+            background: var(--bg-white);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: 0.5s ease-in-out;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-item {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 1;
+            visibility: visible;
+            transition: all 0.5s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 40px 60px;
+            transform: translateX(0);
+        }
+
+        .form-item.hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(-20%);
+        }
+
+        .form-item h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            color: var(--text-dark);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-bottom: 2px solid #ddd;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-group label {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: var(--text-light);
+            pointer-events: none;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus + label,
+        .input-group input:valid + label {
+            top: -5px;
+            font-size: 12px;
+            color: var(--primary);
+        }
+
+        .input-group input:focus {
+            border-bottom-color: var(--primary);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: var(--bg-white);
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background: #d35400;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(230, 126, 34, 0.3);
+        }
+
+        .switch-form {
+            background: transparent;
+            border: 2px solid var(--bg-white);
+        }
+
+        .switch-form:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .form-footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container.sign-up-active .container-info {
+            transform: translateX(150%) rotateY(-5deg);
+        }
+
+        .container.sign-up-active .info-item {
+            transform: translateX(-30px);
+        }
+
+        .container.sign-up-active .container-form {
+            transform: translateX(-66.7%);
+        }
+
+        .container.sign-up-active .form-item.sign-up {
+            transform: translateX(0);
+            opacity: 1;
+            visibility: visible;
+            z-index: 2;
+        }
+
+        .container.sign-up-active .form-item.log-in {
+            transform: translateX(20%);
+            opacity: 0;
+            visibility: hidden;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 90%;
+                height: auto;
+                margin: 20px;
+                min-height: 600px;
+            }
+
+            .container-forms {
+                flex-direction: column;
+                perspective: none;
+            }
+
+            .container-info, .container-form {
+                width: 100%;
+                padding: 30px;
+            }
+
+            .form-item {
+                padding: 30px;
+            }
+
+            .container.sign-up-active .container-info {
+                transform: translateY(-100%);
+            }
+
+            .container.sign-up-active .info-item {
+                transform: translateY(0);
+            }
+
+            .container.sign-up-active .container-form {
+                transform: translateY(0);
+            }
+
+            .form-item {
+                position: relative;
+                height: auto;
+            }
+
+            .form-item.hidden {
+                display: none;
+                transform: none;
+            }
+        }
+        .wheel-and-hamster {
+            --dur: 1s;
+            position: fixed;
+            width: 8em;
+            height: 8em;
+            font-size: 10px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            display: none;
+        }
+
+        .wheel-and-hamster.active {
+            display: block;
+        }
+
+        .wheel,
+        .hamster,
+        .hamster div,
+        .spoke {
+            position: absolute;
+        }
+
+        .wheel,
+        .spoke {
+            border-radius: 50%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .wheel {
+            background: radial-gradient(100% 100% at center,hsla(0,0%,60%,0) 47.8%,hsl(0,0%,60%) 48%);
+            z-index: 2;
+        }
+
+        .hamster {
+            animation: hamster var(--dur) ease-in-out infinite;
+            top: 50%;
+            left: calc(50% - 3.5em);
+            width: 7em;
+            height: 3.75em;
+            transform: rotate(4deg) translate(-0.8em,1.85em);
+            transform-origin: 50% 0;
+            z-index: 1;
+        }
+
+        .hamster__head {
+            animation: hamsterHead var(--dur) ease-in-out infinite;
+            background: hsl(30,90%,55%);
+            border-radius: 70% 30% 0 100% / 40% 25% 25% 60%;
+            box-shadow: 0 -0.25em 0 hsl(30,90%,80%) inset,
+                0.75em -1.55em 0 hsl(30,90%,90%) inset;
+            top: 0;
+            left: -2em;
+            width: 2.75em;
+            height: 2.5em;
+            transform-origin: 100% 50%;
+        }
+
+        .hamster__ear {
+            animation: hamsterEar var(--dur) ease-in-out infinite;
+            background: hsl(0,90%,85%);
+            border-radius: 50%;
+            box-shadow: -0.25em 0 hsl(30,90%,55%) inset;
+            top: -0.25em;
+            right: -0.25em;
+            width: 0.75em;
+            height: 0.75em;
+            transform-origin: 50% 75%;
+        }
+
+        .hamster__eye {
+            animation: hamsterEye var(--dur) linear infinite;
+            background-color: hsl(0,0%,0%);
+            border-radius: 50%;
+            top: 0.375em;
+            left: 1.25em;
+            width: 0.5em;
+            height: 0.5em;
+        }
+
+        .hamster__nose {
+            background: hsl(0,90%,75%);
+            border-radius: 35% 65% 85% 15% / 70% 50% 50% 30%;
+            top: 0.75em;
+            left: 0;
+            width: 0.2em;
+            height: 0.25em;
+        }
+
+        .hamster__body {
+            animation: hamsterBody var(--dur) ease-in-out infinite;
+            background: hsl(30,90%,90%);
+            border-radius: 50% 30% 50% 30% / 15% 60% 40% 40%;
+            box-shadow: 0.1em 0.75em 0 hsl(30,90%,55%) inset,
+                0.15em -0.5em 0 hsl(30,90%,80%) inset;
+            top: 0.25em;
+            left: 2em;
+            width: 4.5em;
+            height: 3em;
+            transform-origin: 17% 50%;
+            transform-style: preserve-3d;
+        }
+
+        .hamster__limb--fr,
+        .hamster__limb--fl {
+            clip-path: polygon(0 0,100% 0,70% 80%,60% 100%,0% 100%,40% 80%);
+            top: 2em;
+            left: 0.5em;
+            width: 1em;
+            height: 1.5em;
+            transform-origin: 50% 0;
+        }
+
+        .hamster__limb--fr {
+            animation: hamsterFRLimb var(--dur) linear infinite;
+            background: linear-gradient(hsl(30,90%,80%) 80%,hsl(0,90%,75%) 80%);
+            transform: rotate(15deg) translateZ(-1px);
+        }
+
+        .hamster__limb--fl {
+            animation: hamsterFLLimb var(--dur) linear infinite;
+            background: linear-gradient(hsl(30,90%,90%) 80%,hsl(0,90%,85%) 80%);
+            transform: rotate(15deg);
+        }
+
+        .hamster__limb--br,
+        .hamster__limb--bl {
+            border-radius: 0.75em 0.75em 0 0;
+            clip-path: polygon(0 0,100% 0,100% 30%,70% 90%,70% 100%,30% 100%,40% 90%,0% 30%);
+            top: 1em;
+            left: 2.8em;
+            width: 1.5em;
+            height: 2.5em;
+            transform-origin: 50% 30%;
+        }
+
+        .hamster__limb--br {
+            animation: hamsterBRLimb var(--dur) linear infinite;
+            background: linear-gradient(hsl(30,90%,80%) 90%,hsl(0,90%,75%) 90%);
+            transform: rotate(-25deg) translateZ(-1px);
+        }
+
+        .hamster__limb--bl {
+            animation: hamsterBLLimb var(--dur) linear infinite;
+            background: linear-gradient(hsl(30,90%,90%) 90%,hsl(0,90%,85%) 90%);
+            transform: rotate(-25deg);
+        }
+
+        .hamster__tail {
+            animation: hamsterTail var(--dur) linear infinite;
+            background: hsl(0,90%,85%);
+            border-radius: 0.25em 50% 50% 0.25em;
+            box-shadow: 0 -0.2em 0 hsl(0,90%,75%) inset;
+            top: 1.5em;
+            right: -0.5em;
+            width: 1em;
+            height: 0.5em;
+            transform: rotate(30deg) translateZ(-1px);
+            transform-origin: 0.25em 0.25em;
+        }
+
+        .spoke {
+            animation: spoke var(--dur) linear infinite;
+            background: radial-gradient(100% 100% at center,hsl(0,0%,60%) 4.8%,hsla(0,0%,60%,0) 5%),
+                linear-gradient(hsla(0,0%,55%,0) 46.9%,hsl(0,0%,65%) 47% 52.9%,hsla(0,0%,65%,0) 53%) 50% 50% / 99% 99% no-repeat;
+        }
+
+        @keyframes hamster {
+            from, to {
+                transform: rotate(4deg) translate(-0.8em,1.85em);
+            }
+
+            50% {
+                transform: rotate(0) translate(-0.8em,1.85em);
+            }
+        }
+
+        @keyframes hamsterHead {
+            from, 25%, 50%, 75%, to {
+                transform: rotate(0);
+            }
+
+            12.5%, 37.5%, 62.5%, 87.5% {
+                transform: rotate(8deg);
+            }
+        }
+
+        @keyframes hamsterEye {
+            from, 90%, to {
+                transform: scaleY(1);
+            }
+
+            95% {
+                transform: scaleY(0);
+            }
+        }
+
+        @keyframes hamsterEar {
+            from, 25%, 50%, 75%, to {
+                transform: rotate(0);
+            }
+
+            12.5%, 37.5%, 62.5%, 87.5% {
+                transform: rotate(12deg);
+            }
+        }
+
+        @keyframes hamsterBody {
+            from, 25%, 50%, 75%, to {
+                transform: rotate(0);
+            }
+
+            12.5%, 37.5%, 62.5%, 87.5% {
+                transform: rotate(-2deg);
+            }
+        }
+
+        @keyframes hamsterFRLimb {
+            from, 25%, 50%, 75%, to {
+                transform: rotate(50deg) translateZ(-1px);
+            }
+
+            12.5%, 37.5%, 62.5%, 87.5% {
+                transform: rotate(-30deg) translateZ(-1px);
+            }
+        }
+
+        @keyframes hamsterFLLimb {
+            from, 25%, 50%, 75%, to {
+                transform: rotate(-30deg);
+            }
+
+            12.5%, 37.5%, 62.5%, 87.5% {
+                transform: rotate(50deg);
+            }
+        }
+
+        @keyframes hamsterBRLimb {
+            from, 25%, 50%, 75%, to {
+                transform: rotate(-60deg) translateZ(-1px);
+            }
+
+            12.5%, 37.5%, 62.5%, 87.5% {
+                transform: rotate(20deg) translateZ(-1px);
+            }
+        }
+
+        @keyframes hamsterBLLimb {
+            from, 25%, 50%, 75%, to {
+                transform: rotate(20deg);
+            }
+
+            12.5%, 37.5%, 62.5%, 87.5% {
+                transform: rotate(-60deg);
+            }
+        }
+
+        @keyframes hamsterTail {
+            from, 25%, 50%, 75%, to {
+                transform: rotate(30deg) translateZ(-1px);
+            }
+
+            12.5%, 37.5%, 62.5%, 87.5% {
+                transform: rotate(10deg) translateZ(-1px);
+            }
+        }
+
+        @keyframes spoke {
+            from {
+                transform: rotate(0);
+            }
+
+            to {
+                transform: rotate(-1turn);
+            }
+        }
+
+        /* Add overlay for loader */
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            display: none;
+        }
+
+        .loader-overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation"></div>
+    
+    <!-- Add loader overlay and hamster wheel -->
+    <div class="loader-overlay">
+        <div class="wheel-and-hamster">
+            <div class="wheel"></div>
+            <div class="hamster">
+                <div class="hamster__body">
+                    <div class="hamster__head">
+                        <div class="hamster__ear"></div>
+                        <div class="hamster__eye"></div>
+                        <div class="hamster__nose"></div>
+                    </div>
+                    <div class="hamster__limb hamster__limb--fr"></div>
+                    <div class="hamster__limb hamster__limb--fl"></div>
+                    <div class="hamster__limb hamster__limb--br"></div>
+                    <div class="hamster__limb hamster__limb--bl"></div>
+                    <div class="hamster__tail"></div>
+                </div>
+            </div>
+            <div class="spoke"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="container-forms">
+            <div class="container-info">
+                <div class="info-item">
+                    <h2>Welcome Back</h2>
+                    <p>Track your moods, discover personalized recommendations, and take control of your mental well-being.</p>
+                    <button class="btn switch-form" onclick="toggleForm()">Create Account</button>
+                </div>
+            </div>
+            <div class="container-form">
+                <div class="form-item" id="login-form">
+                    <h2>Sign In</h2>
+                    <form onsubmit="handleLogin(event)">
+                        <div class="input-group">
+                            <input type="text" id="login-username" required>
+                            <label for="login-username">Username</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="password" id="login-password" required>
+                            <label for="login-password">Password</label>
+                        </div>
+                        <button type="submit" class="btn">Login</button>
+                        <div class="form-footer">
+                            <a href="#">Forgot Password?</a>
+                        </div>
+                    </form>
+                </div>
+                <div class="form-item hidden" id="signup-form">
+                    <h2>Create Account</h2>
+                    <form onsubmit="handleSignup(event)">
+                        <div class="input-group">
+                            <input type="text" id="signup-name" required>
+                            <label for="signup-name">Full Name</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="email" id="signup-email" required>
+                            <label for="signup-email">Email</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="signup-username" required>
+                            <label for="signup-username">Username</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="password" id="signup-password" required>
+                            <label for="signup-password">Password</label>
+                        </div>
+                        <button type="submit" class="btn">Sign Up</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showLoader() {
+            document.querySelector('.loader-overlay').classList.add('active');
+            document.querySelector('.wheel-and-hamster').classList.add('active');
+        }
+
+        function hideLoader() {
+            document.querySelector('.loader-overlay').classList.remove('active');
+            document.querySelector('.wheel-and-hamster').classList.remove('active');
+        }
+
+        function toggleForm() {
+            const container = document.querySelector('.container');
+            const loginForm = document.getElementById('login-form');
+            const signupForm = document.getElementById('signup-form');
+            const infoTitle = document.querySelector('.info-item h2');
+            const infoText = document.querySelector('.info-item p');
+            const switchBtn = document.querySelector('.switch-form');
+
+            container.classList.toggle('sign-up-active');
+            loginForm.classList.toggle('hidden');
+            signupForm.classList.toggle('hidden');
+
+            if (container.classList.contains('sign-up-active')) {
+                infoTitle.textContent = 'One of Us?';
+                infoText.textContent = 'If you already have an account, just sign in. We\'ve missed you!';
+                switchBtn.textContent = 'Sign In';
+            } else {
+                infoTitle.textContent = 'Welcome Back';
+                infoText.textContent = 'Track your moods, discover personalized recommendations, and take control of your mental well-being.';
+                switchBtn.textContent = 'Create Account';
+            }
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            showLoader();
+            
+            // Simulate API call delay
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            hideLoader();
+            window.location.href = 'mood-tracker.html';
+        }
+
+        async function handleSignup(event) {
+            event.preventDefault();
+            showLoader();
+            
+            // Simulate API call delay
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            hideLoader();
+            window.location.href = 'mood-tracker.html';
+        }
+    </script>
+</body>
+</html> 

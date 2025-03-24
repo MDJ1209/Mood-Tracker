@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Tracker | MindWell</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(45deg, #0ce39a, #69007f, #fc0987);
+            --secondary-gradient: linear-gradient(45deg, #0ce39a, #69007f);
+            --bg-gradient: linear-gradient(135deg, #1a1a1a 0%, #2c3e50 100%);
+            --text-light: #95a5a6;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-hover: rgba(255, 255, 255, 0.1);
+            --glass-active: rgba(12, 227, 154, 0.15);
+            --shadow-color: rgba(12, 227, 154, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff;
+            text-decoration: none;
+            background: linear-gradient(45deg, #0ce39a, #69007f, #fc0987);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 300% 300%;
+            animation: gradient-text 5s ease infinite;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(45deg, #0ce39a, #69007f, #fc0987);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 100px auto 40px;
+            padding: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .welcome-screen {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 1rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 300% 300%;
+            animation: gradient-text 5s ease infinite;
+        }
+
+        .welcome-description {
+            color: #95a5a6;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .start-btn {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            background: var(--secondary-gradient);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px var(--shadow-color);
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(12, 227, 154, 0.3);
+        }
+
+        .gender-screen, .mood-screen {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .option-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-card:hover {
+            background: var(--glass-hover);
+            transform: translateY(-5px);
+            border-color: #0ce39a;
+        }
+
+        .option-card.selected {
+            background: var(--glass-active);
+            border-color: #0ce39a;
+            box-shadow: 0 5px 15px var(--shadow-color);
+        }
+
+        .option-emoji {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .option-label {
+            font-size: 1.1rem;
+            color: #fff;
+        }
+
+        .chat-screen {
+            display: none;
+        }
+
+        .chat-container {
+            height: 400px;
+            overflow-y: auto;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message.user {
+            align-items: flex-end;
+        }
+
+        .message.bot {
+            align-items: flex-start;
+        }
+
+        .message-content {
+            max-width: 80%;
+            padding: 1rem;
+            border-radius: 15px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+        }
+
+        .message.user .message-content {
+            background: var(--glass-active);
+            border: 1px solid #0ce39a;
+        }
+
+        .message.bot .message-content {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 1rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            background: var(--glass-bg);
+            color: #fff;
+            font-size: 1rem;
+            resize: none;
+            min-height: 50px;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            background: var(--glass-hover);
+            border-color: #0ce39a;
+        }
+
+        .send-btn {
+            padding: 0 1.5rem;
+            border: none;
+            border-radius: 25px;
+            background: var(--secondary-gradient);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px var(--shadow-color);
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(12, 227, 154, 0.3);
+        }
+
+        .suggestions-container {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: var(--glass-bg);
+            border-radius: 15px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .suggestions-title {
+            color: #fff;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .suggestions-list {
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .suggestion-item {
+            padding: 0.8rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .suggestion-item:hover {
+            background: var(--glass-hover);
+            border-color: #0ce39a;
+            transform: translateX(5px);
+        }
+
+        .progress-container {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .progress-step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--glass-bg);
+            margin: 0 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border: 1px solid var(--glass-border);
+        }
+
+        .progress-step::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: var(--glass-border);
+            left: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .progress-step:last-child::after {
+            display: none;
+        }
+
+        .progress-step.active {
+            background: var(--secondary-gradient);
+            border-color: #0ce39a;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes gradient-text {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 80px 10px 20px;
+                padding: 1rem;
+            }
+
+            .welcome-title {
+                font-size: 2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .progress-step {
+                width: 25px;
+                height: 25px;
+                margin: 0 0.5rem;
+            }
+        }
+
+        /* Add shimmer effect to cards */
+        .option-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                120deg,
+                transparent,
+                rgba(255, 255, 255, 0.1),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .option-card:hover::before {
+            left: 100%;
+        }
+
+        /* Enhanced animations */
+        .screen {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .screen.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .message {
+            animation: messageSlide 0.3s ease-out forwards;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Enhance accessibility */
+        .option-card:focus, .chat-input:focus, .send-btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #0ce39a;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand">MindWell</a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="mood-tracker.html">Mood Tracker</a>
+            <a href="mood-games.html">Mood Games</a>
+            <a href="recommendations.html">Recommendations</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="credits.html">Credits</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="welcomeScreen" class="screen welcome-screen active">
+            <h1 class="welcome-title">Welcome to MindWell</h1>
+            <p class="welcome-description">Let's understand and track your mood together. We'll start with a few questions to personalize your experience.</p>
+            <button class="start-btn">Get Started <i class="fas fa-arrow-right"></i></button>
+        </div>
+
+        <div id="genderScreen" class="screen gender-screen">
+            <h2 class="welcome-title">How do you identify?</h2>
+            <div class="progress-container">
+                <div class="progress-step active">1</div>
+                <div class="progress-step">2</div>
+                <div class="progress-step">3</div>
+            </div>
+            <div class="options-grid">
+                <div class="option-card" data-gender="female">
+                    <div class="option-emoji">👩</div>
+                    <div class="option-label">Female</div>
+                </div>
+                <div class="option-card" data-gender="male">
+                    <div class="option-emoji">👨</div>
+                    <div class="option-label">Male</div>
+                </div>
+                <div class="option-card" data-gender="other">
+                    <div class="option-emoji">🌟</div>
+                    <div class="option-label">Other</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="assessmentScreen" class="screen mood-screen">
+            <h2 class="welcome-title">How are you feeling?</h2>
+            <div class="progress-container">
+                <div class="progress-step active">1</div>
+                <div class="progress-step active">2</div>
+                <div class="progress-step">3</div>
+            </div>
+            <div class="options-grid">
+                <div class="option-card" data-mood="happy">
+                    <div class="option-emoji">😊</div>
+                    <div class="option-label">Happy</div>
+                </div>
+                <div class="option-card" data-mood="sad">
+                    <div class="option-emoji">😔</div>
+                    <div class="option-label">Sad</div>
+                </div>
+                <div class="option-card" data-mood="angry">
+                    <div class="option-emoji">😠</div>
+                    <div class="option-label">Angry</div>
+                </div>
+                <div class="option-card" data-mood="anxious">
+                    <div class="option-emoji">😰</div>
+                    <div class="option-label">Anxious</div>
+                </div>
+                <div class="option-card" data-mood="neutral">
+                    <div class="option-emoji">😐</div>
+                    <div class="option-label">Neutral</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="chatScreen" class="screen chat-screen">
+            <div class="progress-container">
+                <div class="progress-step active">1</div>
+                <div class="progress-step active">2</div>
+                <div class="progress-step active">3</div>
+            </div>
+            <div id="chatMessages" class="chat-container"></div>
+            <div class="chat-input-container">
+                <textarea id="chatInput" class="chat-input" placeholder="Type your message..." rows="1"></textarea>
+                <button id="sendMessage" class="send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+            <div class="suggestions-container">
+                <h3 class="suggestions-title">Common Feelings</h3>
+                <div class="suggestions-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ... existing code from mood-tracker.js ...
+        let userData = {
+            gender: null,
+            mood: null,
+            responses: []
+        };
+
+        // Questions based on gender and mood
+        const questions = {
+            female: {
+                happy: [
+                    "Aha! Whats the best thing that happened today?",
+                    "What small moment today made your heart smile the most?",
+                    "So you feel happy or confident right now?",
+                ],
+                sad: [
+                    "I understand you're feeling down. What's weighing on your mind?",
+                    "Sometimes sharing helps. What triggered this feeling?",
+                    "On a scale of gentle rain to storm, how heavy does this sadness feel?"
+                ],
+                angry: [
+                    "I see you're frustrated. What sparked this feeling?",
+                    "What would help release some of this tension right now?",
+                    "If you could change one thing in this moment, what would it be?"
+                ],
+                anxious: [
+                    "Let's breathe together. What's making your mind race?",
+                    "Is this a familiar feeling or something new?",
+                    "What's the biggest worry on your mind right now?"
+                ],
+                neutral: [
+                    "How would you describe your energy level today?",
+                    "What could make this moment a bit brighter?",
+                    "Is there something specific keeping you in this middle ground?"
+                ]
+            },
+            male: {
+                happy: [
+                    "What victory or achievement brought this good mood?",
+                    "Is there someone who helped create this positive feeling?",
+                    "What would make this great moment even better?"
+                ],
+                sad: [
+                    "I'm here to listen. What's bringing you down?",
+                    "Sometimes life hits hard. What's the main thing troubling you?",
+                    "Would you say this is situational or something deeper?"
+                ],
+                angry: [
+                    "What's the root cause of this frustration?",
+                    "On a scale of 1-10, how intense is this feeling?",
+                    "What would help you feel more in control right now?"
+                ],
+                anxious: [
+                    "What's the main thing causing this anxiety?",
+                    "Is this about something happening now or in the future?",
+                    "What usually helps when you feel this way?"
+                ],
+                neutral: [
+                    "What's keeping your mood balanced today?",
+                    "Is this your usual state or different from normal?",
+                    "What could tip the scales toward positive?"
+                ]
+            }
+        };
+
+        // Enhanced suggestions based on mood
+        const suggestions = {
+            happy: [
+                "🌟 Achievement unlocked! Write down this success",
+                "🎵 Create a 'Happy Moments' playlist",
+                "📸 Take a selfie to remember this moment",
+                "🤝 Share your joy with someone",
+                "🎯 Use this energy for something new"
+            ],
+            sad: [
+                "😔 Feeling lonely or disconnected",
+                "💔 Going through relationship issues",
+                "📉 Work or academic stress",
+                "👥 Missing someone special",
+                "🌧️ Weather affecting my mood"
+            ],
+            angry: [
+                "😠 Someone crossed my boundaries",
+                "⚖️ Dealing with unfairness",
+                "🗣️ Communication problems",
+                "❌ Plans got disrupted",
+                "💼 Work frustrations"
+            ],
+            anxious: [
+                "📅 Upcoming deadline worry",
+                "👥 Social situation anxiety",
+                "💭 Overthinking future scenarios",
+                "📱 Information overload",
+                "🎯 Perfectionism stress"
+            ],
+            neutral: [
+                "😐 Just going through the motions",
+                "🔄 Regular routine feeling",
+                "💭 Mind feels clear but not excited",
+                "🌤️ Waiting for something to happen",
+                "📊 Balanced but seeking inspiration"
+            ]
+        };
+
+        // DOM Elements
+        const screens = {
+            welcome: document.getElementById('welcomeScreen'),
+            gender: document.getElementById('genderScreen'),
+            assessment: document.getElementById('assessmentScreen'),
+            chat: document.getElementById('chatScreen')
+        };
+
+        const startBtn = document.querySelector('.start-btn');
+        const genderOptions = document.querySelectorAll('[data-gender]');
+        const moodOptions = document.querySelectorAll('[data-mood]');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendButton = document.getElementById('sendMessage');
+        const suggestionsList = document.querySelector('.suggestions-list');
+        const progressSteps = document.querySelectorAll('.progress-step');
+
+        let chatStarted = false;
+
+        // Event Listeners
+        startBtn.addEventListener('click', () => {
+            switchScreen('welcome', 'gender');
+            updateProgress(1);
+        });
+
+        genderOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                genderOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+                userData.gender = option.dataset.gender;
+                updateProgress(2);
+                setTimeout(() => {
+                    switchScreen('gender', 'assessment');
+                }, 500);
+            });
+        });
+
+        moodOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                moodOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+                userData.mood = option.dataset.mood;
+                updateProgress(3);
+                setTimeout(() => {
+                    switchScreen('assessment', 'chat');
+                    initializeChat();
+                }, 500);
+            });
+        });
+
+        sendButton.addEventListener('click', handleUserMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleUserMessage();
+            }
+        });
+
+        // Functions
+        function switchScreen(from, to) {
+            screens[from].classList.remove('active');
+            setTimeout(() => {
+                screens[to].classList.add('active');
+            }, 300);
+        }
+
+        function updateProgress(step) {
+            progressSteps.forEach((stepEl, index) => {
+                stepEl.classList.toggle('active', index < step);
+            });
+        }
+
+        function initializeChat() {
+            chatMessages.innerHTML = '';
+            suggestionsList.innerHTML = '';
+            
+            const welcomeMessages = {
+                happy: "That's wonderful to hear! Let's explore what's bringing you joy.",
+                sad: "I'm here to listen and support you through this difficult time.",
+                angry: "I understand you're frustrated. Let's work through this together.",
+                anxious: "It's okay to feel anxious. Let's take it one step at a time.",
+                neutral: "Sometimes a neutral day is just what we need. Let's explore your thoughts."
+            };
+            
+            addBotMessage(welcomeMessages[userData.mood]);
+            
+            setTimeout(() => {
+                const firstQuestion = questions[userData.gender][userData.mood][0];
+                addBotMessage(firstQuestion);
+            }, 1000);
+            
+            suggestions[userData.mood].forEach(suggestion => {
+                const div = document.createElement('div');
+                div.className = 'suggestion-item';
+                div.textContent = suggestion;
+                div.addEventListener('click', () => {
+                    chatInput.value = suggestion;
+                });
+                suggestionsList.appendChild(div);
+            });
+        }
+
+        function handleUserMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+            
+            addUserMessage(message);
+            chatInput.value = '';
+            processUserResponse(message);
+        }
+
+        function addUserMessage(message) {
+            const div = document.createElement('div');
+            div.className = 'message user';
+            div.innerHTML = `<div class="message-content">${message}</div>`;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function addBotMessage(message) {
+            const div = document.createElement('div');
+            div.className = 'message bot';
+            div.innerHTML = `<div class="message-content">${message}</div>`;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function processUserResponse(message) {
+            userData.responses.push(message);
+            
+            setTimeout(() => {
+                const questionIndex = userData.responses.length - 1;
+                const response = getEmpathicResponse(message, questionIndex);
+                addBotMessage(response);
+
+                setTimeout(() => {
+                    if (questionIndex < questions[userData.gender][userData.mood].length - 1) {
+                        addBotMessage(questions[userData.gender][userData.mood][questionIndex + 1]);
+                    } else {
+                        const followUp = generateDynamicFollowUp(message, userData.mood);
+                        addBotMessage(followUp);
+                    }
+                }, 1500);
+            }, 1000);
+        }
+
+        function getEmpathicResponse(message, questionIndex) {
+            const responses = {
+                happy: ["That's wonderful! 🌟", "I'm so glad to hear that! ✨", "Keep that positive energy flowing! 🎉"],
+                sad: ["I understand how you feel 💜", "That must be difficult 🫂", "I'm here to listen 🌸"],
+                angry: ["That's frustrating! 💪", "I hear your anger 🎯", "Let's work through this 💫"],
+                anxious: ["Take a deep breath with me 🫂", "You're not alone in this 💜", "We'll face this together 🌱"],
+                neutral: ["I hear you 💭", "Tell me more 🌟", "Let's explore that 💫"]
+            };
+            
+            return responses[userData.mood][questionIndex % 3];
+        }
+
+        function generateDynamicFollowUp(message, mood) {
+            const followUps = {
+                happy: ["What else makes you smile? 🌟", "How can we maintain this joy? ✨", "Want to share more happy moments? 🎉"],
+                sad: ["How can I support you? 💜", "What would help right now? 🫂", "Shall we explore ways to feel better? 🌸"],
+                angry: ["Need to vent more? 💪", "What would help you feel calmer? 🎯", "Want to discuss solutions? 💫"],
+                anxious: ["Let's break this down together 🫂", "What helps you feel grounded? 💜", "Want to try some breathing exercises? 🌱"],
+                neutral: ["What would brighten your day? 💭", "Want to explore your feelings more? 🌟", "How can we lift your spirits? 💫"]
+            };
+            
+            return followUps[mood][Math.floor(Math.random() * 3)];
+        }
+
+        chatInput.addEventListener('input', () => {
+            chatInput.style.height = 'auto';
+            chatInput.style.height = chatInput.scrollHeight + 'px';
+        });
+    </script>
+</body>
+</html> 
